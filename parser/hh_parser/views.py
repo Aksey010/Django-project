@@ -1,13 +1,27 @@
 from django.shortcuts import render, HttpResponseRedirect
 from .models import Search, Requirements, Skill
 from .forms import ResultsForm
-from django.urls import reverse
+from django.urls import reverse, reverse_lazy
 from modules.parsing_modul import hh_parser
+from django.views.generic import ListView, FormView, TemplateView
 # Create your views here.
 
 
-def index(request):
-    return render(request, 'hh_parser/index.html')
+class IndexListView(ListView):
+    model = Search
+    template_name = 'hh_parser/index.html'
+
+
+# Не смог придумать, как использовать cbv, так как не нашёл способ достать значения из формы и использовать из в url
+# class FormListView(FormView):
+#
+#     form_class = ResultsForm
+#
+#     template_name = 'hh_parser/form.html'
+#
+#     success_url = reverse_lazy('parser:results', kwargs={'vacancy': 'Юрист', 'city': 'Москва'})
+    # def get_success_url(self, **kwargs):
+    #     return reverse_lazy('parser:results', kwargs={'vacancy': self.kwargs['vacancy'], 'city': self.kwargs['city']})
 
 
 def form(request):
@@ -25,17 +39,18 @@ def form(request):
         return render(request, 'hh_parser/form.html', context={'form': form})
 
 
-def contacts(request):
-    return render(request, 'hh_parser/contacts.html')
+class ContactsTemplateView(TemplateView):
+    template_name = 'hh_parser/contacts.html'
 
 
+# Не смог придумать, как использовать cbv
 def results(request, vacancy, city):
     try:
         obj = Search.objects.get(vacancy=vacancy, city=city)
         skills = []
         world_id = obj.id
         for d in Requirements.objects.filter(world_id=world_id).values():
-            print(d, '*'*60)
+            # print(d, '*'*60)
             id_s = d['skill_id']
             skills.append(Skill.objects.filter(id=id_s).values()[0]['name'])
 
@@ -43,8 +58,8 @@ def results(request, vacancy, city):
             skills = 'Нет информации'
     except:
         data = hh_parser(vacancy, city)
-        print(data)
+        # print(data)
         obj = data[0]
         skills = data[1]
 
-    return render(request, 'hh_parser/results.html', context={'obj': obj, 'skills': skills})  # TODO Добавит скилы
+    return render(request, 'hh_parser/results.html', context={'obj': obj, 'skills': skills})
