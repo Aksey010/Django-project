@@ -23,10 +23,7 @@
                     <a class="list-group-item list-group-item-action list-group-item-light p-3" href="{% url 'parser:form' %}">Поиск по вакансиям</a>
                     <a class="list-group-item list-group-item-action list-group-item-light p-3" href="{% url 'parser:contacts' %}">Контактные данные</a>
                     {% if user.is_authenticated %}
-                    <form  method="post" action="{% url 'users:logout' %}">
-                        {% csrf_token %}
-                        <button class="list-group-item list-group-item-action list-group-item-light p-3" type="submit">Выйти из аккаунта</button>
-                    </form>
+                    <a class="list-group-item list-group-item-action list-group-item-light p-3" href="{% url 'users:logout' %}">Выйти из аккаунт</a>
                     {% else %}
                     <a class="list-group-item list-group-item-action list-group-item-light p-3" href="{% url 'users:login' %}">Войти в аккаунт</a>
                     {% endif %}
