@@ -1,0 +1,20 @@
+{% extends "base.html" %}
+{% block content %}
+
+                <h4>Запрос:</h4>
+            <p>{{obj.vacancy}}<br>
+                {{obj.city}}
+                </p>
+                <h4>Количество вакансий</h4>
+            <p>{{obj.count}}</p>
+                <h4>Средняя зарплата в рублях</h4>
+            <p>От {{obj.sal_from}}
+                <br />
+                До {{obj.sal_to}} </p>
+                <h4>Самые часто требуемые навыки</h4>
+                <ul>
+                    {% for skill in skills %}
+                <li>{{ skill }}
+                    {% endfor %}
+                </ul>
+{% endblock %}
