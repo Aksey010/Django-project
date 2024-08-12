@@ -6,13 +6,32 @@
 <p>Чтобы воспользоваться парсером, надо ввести вакансию, по которой он будет искать, и выбрать город из списка. </p>
 
 <h1 class="mt-4">Все запросы</h1>
+{% for search in page_obj %}
 <ul>
-    {% for item in object_list %}
-<li> {{item.vacancy}}
-    <br>
-     {{item.city}}
-    <hr>
-</li>
-    {% endfor %}
+    <li>{{ search.vacancy }}<br>
+    {{ search.city }}<br>
+    {{ search.count }}<br>
+    {{ search.sal_from }}<br>
+    {{ search.sal_to }}</li>
 </ul>
+<hr>
+{% endfor %}
+
+<div class="pagination">
+    <span class="step-links">
+        {% if page_obj.has_previous %}
+            <a href="?page=1">&laquo; первая</a>
+            <a href="?page={{ page_obj.previous_page_number }}">предыдущая</a>
+        {% endif %}
+
+        <span class="current">
+            Страница {{ page_obj.number }} из {{ page_obj.paginator.num_pages }}.
+        </span>
+
+        {% if page_obj.has_next %}
+            <a href="?page={{ page_obj.next_page_number }}">следующая</a>
+            <a href="?page={{ page_obj.paginator.num_pages }}">последняя &raquo;</a>
+        {% endif %}
+    </span>
+</div>
 {% endblock %}
