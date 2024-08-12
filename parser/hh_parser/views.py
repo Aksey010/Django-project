@@ -10,6 +10,7 @@ from django.views.generic import ListView, FormView, TemplateView
 class IndexListView(ListView):
     model = Search
     template_name = 'hh_parser/index.html'
+    paginate_by = 2
 
 
 # Не смог придумать, как использовать cbv, так как не нашёл способ достать значения из формы и использовать из в url
@@ -33,7 +34,7 @@ def form(request):
 
             return HttpResponseRedirect(reverse('parser:results', kwargs={'vacancy': vacancy, 'city': city}))
         else:
-            return render(request, 'hh_parser/form.html', context={'form': form, })
+            return render(request, 'hh_parser/form.html', context={'form': form})
     else:
         form = ResultsForm()
         return render(request, 'hh_parser/form.html', context={'form': form})
