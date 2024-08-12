@@ -1,0 +1,37 @@
+{% extends "base.html" %}
+{% block content %}
+                    <h1 class="mt-4">Главная страница</h1>
+<h5 class="mt-4">Добро пожаловать, {{user.username}}</h5>
+                    <p>Этот парсер может выводить сводку о количестве вакансий, их средней зарплате и пяти самых требуемых навыках, которые для них требуются.</p>
+<p>Чтобы воспользоваться парсером, надо ввести вакансию, по которой он будет искать, и выбрать город из списка. </p>
+
+<h1 class="mt-4">Все запросы</h1>
+{% for search in page_obj %}
+<ul>
+    <li>{{ search.vacancy }}<br>
+    {{ search.city }}<br>
+    {{ search.count }}<br>
+    {{ search.sal_from }}<br>
+    {{ search.sal_to }}</li>
+</ul>
+<hr>
+{% endfor %}
+
+<div class="pagination">
+    <span class="step-links">
+        {% if page_obj.has_previous %}
+            <a href="?page=1">&laquo; первая</a>
+            <a href="?page={{ page_obj.previous_page_number }}">предыдущая</a>
+        {% endif %}
+
+        <span class="current">
+            Страница {{ page_obj.number }} из {{ page_obj.paginator.num_pages }}.
+        </span>
+
+        {% if page_obj.has_next %}
+            <a href="?page={{ page_obj.next_page_number }}">следующая</a>
+            <a href="?page={{ page_obj.paginator.num_pages }}">последняя &raquo;</a>
+        {% endif %}
+    </span>
+</div>
+{% endblock %}
