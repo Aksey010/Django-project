@@ -1,0 +1,23 @@
+{% extends "base.html" %}
+{% block content %}
+{% if user.is_authenticated %}
+                    <h1 class="mt-4">Поиск по вакансиям</h1>
+                   <form action=""   method="POST">
+                       {% csrf_token %}
+                       {% for field in form %}
+                       <p>{{field.label_tag}}</p>
+                       {% for error in field.errors %}
+                           {{error}}
+                       {% endfor %}
+                       <p>{{field}}</p>
+                       {% endfor %}
+    <input type="submit" value="Искать">
+</form>
+                    <br>
+                    <p><b>Внимание:</b> Поиск может занимать до пары минут</p>
+{% else %}
+<h1 class="mt-4">Поиск по вакансиям</h1>
+<h4 class="mt-4">Вы не вошли в аккаунт</h4>
+Пожалуйста, <a href="{% url 'users:login' %}">войдите в аккаунт</a>. Если у вас нет аккаунта, создать его можно <a href="{% url 'users:register' %}"> здесь</a>.
+{% endif %}
+{% endblock %}
