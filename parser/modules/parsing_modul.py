@@ -1,23 +1,12 @@
-from django.core.management.base import BaseCommand
 import requests
 from hh_parser.models import Requirements, Skill, Search
-
-
-class Command(BaseCommand):
-    def handle(self, *args, **options):
-        # vacancy = input(f'Введите вакансию: ')
-        # city = input(f'Введите город: ')
-        vac_cit = (('python developer', 'Москва'), ('c++ developer', 'Москва'), ('Юрист', 'Москва'), ('Электрик', 'Москва'), ('Инженер', 'Москва'))
-        for i in vac_cit:
-            hh_parser(i[0], i[1])
-
 
 def hh_parser(vacancy, city):
 
     #  Юзер-агент
     headers = {
         'user-agent': 'Mozilla/5.0 (Windows NT 10.0) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/124.0.0.0 Safari/537.36'
-              }
+    }
 
     #  url сайта
     url_vacancies = 'https://api.hh.ru/vacancies'
@@ -38,7 +27,7 @@ def hh_parser(vacancy, city):
 
     count_pages = result['pages']  # Количество страниц
     count = 0  # Количество найденных вакансий
-    from_ = 0                    # Зарплата от и до
+    from_ = 0  # Зарплата от и до
     to_ = 0
     c_f = 0  # Переменная для вычисления среднего значения зарплаты from
     c_t = 0  # Переменная для вычисления среднего значения зарплаты to
@@ -48,7 +37,7 @@ def hh_parser(vacancy, city):
     # Если вакансия и город не в базе, то ...
     if not Search.objects.filter(vacancy=vacancy, city=city).exists():
 
-        want_pages = 4
+        want_pages = 2
         # while True:
         #     try:
         #         want_pages = int(input(f'Введите количество страниц, которые будут обрабатываться (всего{count_pages})'))  # Переменная определения кол-ва обрабатываемых страниц
@@ -148,7 +137,10 @@ def hh_parser(vacancy, city):
         else:
             best_skill = 'Нет информации'
 
-        return vacancy, city, count, from_, to_, best_skill
+
+        output = ({'vacancy': vacancy, 'city': city, 'count': count, 'sal_from': from_, 'sal_to': to_}, best_skill)
+
+        return output
 
     # Если запрос в базе
     else:
@@ -160,11 +152,12 @@ def hh_parser(vacancy, city):
         skill = []
         world_id = data.id
         for d in Requirements.objects.filter(world_id=world_id).values():
-            print(d, '*' * 60)
             id_s = d['skill_id']
             skill.append(Skill.objects.filter(id=id_s).values()[0]['name'])
 
         if not skill:
             skill = 'Нет информации'
 
-        return data['vacancy'], data['city'], data['count'], data['sal_from'], data['sal_to'], skill
+        output = (data, skill)
+
+        return output
